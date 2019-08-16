@@ -187,7 +187,7 @@
   if (![element fb_typeText:textToType frequency:frequency error:&error]) {
     return FBResponseWithError(error);
   }
-  return FBResponseWithElementUUID(elementUUID);
+  return FBResponseWithOK();
 }
 
 + (id<FBResponsePayload>)handleClick:(FBRouteRequest *)request
@@ -203,7 +203,7 @@
 #endif
     return FBResponseWithError(error);
   }
-  return FBResponseWithElementUUID(elementUUID);
+  return FBResponseWithOK();
 }
 
 + (id<FBResponsePayload>)handleClear:(FBRouteRequest *)request
@@ -215,7 +215,7 @@
   if (![element fb_clearTextWithError:&error]) {
     return FBResponseWithError(error);
   }
-  return FBResponseWithElementUUID(elementUUID);
+  return FBResponseWithOK();
 }
 
 #if TARGET_OS_TV

@@ -38,30 +38,20 @@ id<FBResponsePayload> FBResponseWithCachedElement(XCUIElement *element, FBElemen
  */
 id<FBResponsePayload> FBResponseWithCachedElements(NSArray<XCUIElement *> *elements, FBElementCache *elementCache, BOOL compact);
 
-/**
- Returns 'FBCommandStatusNoError' response payload with given elementUUID
- */
-id<FBResponsePayload> FBResponseWithElementUUID(NSString *elementUUID);
-
-/**
- Returns 'FBCommandStatusUnhandled' response payload with given error's description
- */
-id<FBResponsePayload> FBResponseWithError(NSError *error);
-
-/**
- Returns 'FBCommandStatusUnhandled' response payload with given error message
- */
-id<FBResponsePayload> FBResponseWithErrorFormat(NSString *errorFormat, ...) NS_FORMAT_FUNCTION(1,2);
+///**
+// Returns 'FBCommandStatusUnhandled' response payload with given error's description
+// */
+//id<FBResponsePayload> FBResponseWithError(NSError *error);
+//
+///**
+// Returns 'FBCommandStatusUnhandled' response payload with given error message
+// */
+//id<FBResponsePayload> FBResponseWithErrorFormat(NSString *errorFormat, ...) NS_FORMAT_FUNCTION(1,2);
 
 /**
  Returns 'status' response payload with given object
  */
-id<FBResponsePayload> FBResponseWithStatus(FBCommandStatus status, __nullable id object);
-
-/**
- Returns 'FBCommandStatusNoError' response payload with content of a file at given 'path'
- */
-id<FBResponsePayload> FBResponseFileWithPath(NSString *path);
+id<FBResponsePayload> FBResponseWithStatus(FBCommandStatus *status);
 
 /**
  Returns a response payload as a NSDictionary for given element and elementUUID.
