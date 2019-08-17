@@ -11,6 +11,7 @@
 
 #import "FBApplication.h"
 #import "FBConfiguration.h"
+#import "FBProtocolHelpers.h"
 #import "FBRouteRequest.h"
 #import "FBSession.h"
 #import "FBApplication.h"
@@ -77,7 +78,11 @@ static NSString* const USE_FIRST_MATCH = @"useFirstMatch";
 
 + (id<FBResponsePayload>)handleCreateSession:(FBRouteRequest *)request
 {
-  NSDictionary *requirements = request.arguments[@"desiredCapabilities"];
+  NSDictionary<NSString *, id> *requirements;
+  NSError *error;
+  if (nil == (requirements = parseCapabilities(request.arguments, &error))) {
+    return FBResponseWithStatus([FBCommandStatus sessionNotCreatedError:error.description traceback:nil]);
+  }
   [FBConfiguration setShouldUseTestManagerForVisibilityDetection:[requirements[@"shouldUseTestManagerForVisibilityDetection"] boolValue]];
   if (requirements[@"shouldUseCompactResponses"]) {
     [FBConfiguration setShouldUseCompactResponses:[requirements[@"shouldUseCompactResponses"] boolValue]];

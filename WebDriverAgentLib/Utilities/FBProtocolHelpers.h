@@ -24,8 +24,17 @@ NSDictionary *FBInsertElement(NSDictionary *dst, id element);
  Extracts element uuid from dictionary
 
  @param src The source dictionary
- @returns The resulting element uuid or nil if no element keys are found
+ @returns The resulting element or nil if no element keys are found
  */
 id _Nullable FBExtractElement(NSDictionary *src);
+
+/**
+ Parses key/value pairs of valid W3C capabilities
+
+ @param caps The source capabilitites dictionary
+ @param error Is set if there was an error while parsing the source capabilities
+ @returns Parsed capabilitites mapping or nil in case of failure
+ */
+NSDictionary<NSString *, id> *_Nullable parseCapabilities(NSDictionary<NSString *, id> *caps, NSError **error);
 
 NS_ASSUME_NONNULL_END
