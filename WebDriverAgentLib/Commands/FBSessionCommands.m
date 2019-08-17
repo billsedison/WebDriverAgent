@@ -66,11 +66,11 @@ static NSString* const USE_FIRST_MATCH = @"useFirstMatch";
 {
   NSString *urlString = request.arguments[@"url"];
   if (!urlString) {
-    return FBResponseWithStatus(FBCommandStatusInvalidArgument, @"URL is required");
+    return FBResponseWithStatus([FBCommandStatus invalidArgumentErrorWithMessage:@"URL is required" traceback:nil]);
   }
   NSError *error;
   if (![XCUIDevice.sharedDevice fb_openUrl:urlString error:&error]) {
-    return FBResponseWithError(error);
+    return FBResponseWithUnknownError(error);
   }
   return FBResponseWithOK();
 }
@@ -111,7 +111,7 @@ static NSString* const USE_FIRST_MATCH = @"useFirstMatch";
     app.launchEnvironment = (NSDictionary <NSString *, NSString *> *)requirements[@"environment"] ?: @{};
     [app launch];
     if (app.processID == 0) {
-      return FBResponseWithErrorFormat(@"Failed to launch %@ application", bundleID);
+      return FBResponseWithStatus([FBCommandStatus sessionNotCreatedError:[NSString stringWithFormat:@"Failed to launch %@ application", bundleID] traceback:nil]);
     }
   }
 
@@ -143,13 +143,13 @@ static NSString* const USE_FIRST_MATCH = @"useFirstMatch";
 + (id<FBResponsePayload>)handleSessionAppTerminate:(FBRouteRequest *)request
 {
   BOOL result = [request.session terminateApplicationWithBundleId:(id)request.arguments[@"bundleId"]];
-  return FBResponseWithStatus(FBCommandStatusNoError, @(result));
+  return FBResponseWithObject(@(result));
 }
 
 + (id<FBResponsePayload>)handleSessionAppState:(FBRouteRequest *)request
 {
   NSUInteger state = [request.session applicationStateWithBundleId:(id)request.arguments[@"bundleId"]];
-  return FBResponseWithStatus(FBCommandStatusNoError, @(state));
+  return FBResponseWithObject(@(state));
 }
 
 + (id<FBResponsePayload>)handleGetActiveSession:(FBRouteRequest *)request
@@ -181,9 +181,7 @@ static NSString* const USE_FIRST_MATCH = @"useFirstMatch";
     [buildInfo setObject:upgradeTimestamp forKey:@"upgradedAt"];
   }
 
-  return
-  FBResponseWithStatus(
-    FBCommandStatusNoError,
+  return FBResponseWithObject(
     @{
       @"state" : @"success",
       @"os" :
@@ -205,7 +203,7 @@ static NSString* const USE_FIRST_MATCH = @"useFirstMatch";
 + (id<FBResponsePayload>)handleGetHealthCheck:(FBRouteRequest *)request
 {
   if (![[XCUIDevice sharedDevice] fb_healthCheckWithApplication:[FBApplication fb_activeApplication]]) {
-    return FBResponseWithErrorFormat(@"Health check failed");
+    return FBResponseWithUnknownErrorFormat(@"Health check failed");
   }
   return FBResponseWithOK();
 }

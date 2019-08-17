@@ -28,31 +28,31 @@ NSString *const FBElementNotVisibleException = @"FBElementNotVisibleException";
 
 - (BOOL)handleException:(NSException *)exception forResponse:(RouteResponse *)response
 {
-  static NSDictionary<NSString *, NSArray *> *exceptionsMapping;
-  static dispatch_once_t onceExceptionsMapping;
-  dispatch_once(&onceExceptionsMapping, ^{
-    exceptionsMapping = @{
-      FBApplicationDeadlockDetectedException: @[@(FBCommandStatusApplicationDeadlockDetected)],
-      FBSessionDoesNotExistException: @[@(FBCommandStatusNoSuchSession)],
-      FBInvalidArgumentException: @[@(FBCommandStatusInvalidArgument)],
-      FBElementAttributeUnknownException: @[@(FBCommandStatusInvalidSelector)],
-      FBAlertObstructingElementException: @[@(FBCommandStatusUnexpectedAlertPresent), @"Alert is obstructing view"],
-      FBApplicationCrashedException: @[@(FBCommandStatusApplicationCrashDetected)],
-      FBInvalidXPathException: @[@(FBCommandStatusInvalidXPathSelector)],
-      FBClassChainQueryParseException: @[@(FBCommandStatusInvalidSelector)],
-      FBElementNotVisibleException: @[@(FBCommandStatusElementNotVisible)],
-    };
-  });
-
-  NSArray *status = exceptionsMapping[exception.name];
-  if (nil == status) {
+  id<FBResponsePayload> payload;
+  if ([exception.name isEqualToString:FBSessionDoesNotExistException]) {
+    payload = FBResponseWithStatus([FBCommandStatus noSuchDriverErrorWithMessage:exception.reason
+                                                                       traceback:[NSString stringWithFormat:@"%@", exception.callStackSymbols]]);
+  } else if ([exception.name isEqualToString:FBInvalidArgumentException]
+             || [exception.name isEqualToString:FBElementAttributeUnknownException]) {
+    payload = FBResponseWithStatus([FBCommandStatus invalidArgumentErrorWithMessage:exception.reason
+                                                                          traceback:[NSString stringWithFormat:@"%@", exception.callStackSymbols]]);
+  } else if ([exception.name isEqualToString:FBAlertObstructingElementException]) {
+    payload = FBResponseWithStatus([FBCommandStatus unexpectedAlertOpenErrorWithMessage:nil
+                                                                              traceback:[NSString stringWithFormat:@"%@", exception.callStackSymbols]]);
+  } else if ([exception.name isEqualToString:FBApplicationCrashedException]
+             || [exception.name isEqualToString:FBApplicationDeadlockDetectedException]) {
+    payload = FBResponseWithStatus([FBCommandStatus invalidElementStateErrorWithMessage:exception.reason
+                                                                              traceback:[NSString stringWithFormat:@"%@", exception.callStackSymbols]]);
+  } else if ([exception.name isEqualToString:FBInvalidXPathException]
+             || [exception.name isEqualToString:FBClassChainQueryParseException]) {
+    payload = FBResponseWithStatus([FBCommandStatus invalidSelectorErrorWithMessage:exception.reason
+                                                                          traceback:[NSString stringWithFormat:@"%@", exception.callStackSymbols]]);
+  } else if ([exception.name isEqualToString:FBElementNotVisibleException]) {
+    payload = FBResponseWithStatus([FBCommandStatus elementNotVisibleErrorWithMessage:exception.reason
+                                                                            traceback:[NSString stringWithFormat:@"%@", exception.callStackSymbols]]);
+  } else {
     return NO;
   }
-
-  NSUInteger statusValue = [[status objectAtIndex:0] integerValue];
-  id<FBResponsePayload> payload = [status count] > 1
-    ? FBResponseWithStatus(statusValue, [status objectAtIndex:1])
-    : FBResponseWithStatus(statusValue, [exception reason]);
   [payload dispatchWithResponse:response];
   return YES;
 }

@@ -26,7 +26,7 @@ id<FBResponsePayload> FBResponseWithOK(void);
 /**
  Returns 'FBCommandStatusNoError' response payload with given 'object'
  */
-id<FBResponsePayload> FBResponseWithObject(id object);
+id<FBResponsePayload> FBResponseWithObject(id _Nullable object);
 
 /**
  Returns 'FBCommandStatusNoError' response payload with given 'element', which will be also cached in 'elementCache'
@@ -38,15 +38,15 @@ id<FBResponsePayload> FBResponseWithCachedElement(XCUIElement *element, FBElemen
  */
 id<FBResponsePayload> FBResponseWithCachedElements(NSArray<XCUIElement *> *elements, FBElementCache *elementCache, BOOL compact);
 
-///**
-// Returns 'FBCommandStatusUnhandled' response payload with given error's description
-// */
-//id<FBResponsePayload> FBResponseWithError(NSError *error);
-//
-///**
-// Returns 'FBCommandStatusUnhandled' response payload with given error message
-// */
-//id<FBResponsePayload> FBResponseWithErrorFormat(NSString *errorFormat, ...) NS_FORMAT_FUNCTION(1,2);
+/**
+ Returns 'FBCommandStatusUnhandled' response payload with given error's description
+ */
+id<FBResponsePayload> FBResponseWithUnknownError(NSError *error);
+
+/**
+ Returns 'FBCommandStatusUnhandled' response payload with given error message
+ */
+id<FBResponsePayload> FBResponseWithUnknownErrorFormat(NSString *errorFormat, ...) NS_FORMAT_FUNCTION(1,2);
 
 /**
  Returns 'status' response payload with given object

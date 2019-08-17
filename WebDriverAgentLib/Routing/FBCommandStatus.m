@@ -65,6 +65,14 @@ static NSString *const FB_TIMEOUT_ERROR = @"timeout";
 static const HTTPStatusCode FB_TIMEOUT_ERROR_CODE = kHTTPStatusCodeRequestTimeout;
 static NSString *const FB_TIMEOUT_MSG = @"An operation did not complete before its timeout expired";
 
+static NSString *const FB_ELEMENT_NOT_VISIBLE_ERROR = @"element not visible";
+static const HTTPStatusCode FB_ELEMENT_NOT_VISIBLE_ERROR_CODE = kHTTPStatusCodeBadRequest;
+static NSString *const FB_ELEMENT_NOT_VISIBLE_MSG = @"An element command could not be completed because the element is not visible on the page";
+
+static NSString *const FB_NO_SUCH_DRIVER_ERROR = @"invalid session id";
+static const HTTPStatusCode FB_NO_SUCH_DRIVER_ERROR_CODE = kHTTPStatusCodeNotFound;
+static NSString *const FB_NO_SUCH_DRIVER_MSG = @"A session is either terminated or not started";
+
 
 @implementation FBCommandStatus
 
@@ -230,6 +238,24 @@ static NSString *const FB_TIMEOUT_MSG = @"An operation did not complete before i
   return [[FBCommandStatus alloc] initWithError:FB_TIMEOUT_ERROR
                                      statusCode:FB_TIMEOUT_ERROR_CODE
                                         message:message ?: FB_TIMEOUT_MSG
+                                      traceback:traceback];
+}
+
++ (instancetype)elementNotVisibleErrorWithMessage:(NSString *)message
+                                        traceback:(NSString *)traceback
+{
+  return [[FBCommandStatus alloc] initWithError:FB_ELEMENT_NOT_VISIBLE_ERROR
+                                     statusCode:FB_ELEMENT_NOT_VISIBLE_ERROR_CODE
+                                        message:message ?: FB_ELEMENT_NOT_VISIBLE_MSG
+                                      traceback:traceback];
+}
+
++ (instancetype)noSuchDriverErrorWithMessage:(NSString *)message
+                                   traceback:(NSString *)traceback
+{
+  return [[FBCommandStatus alloc] initWithError:FB_NO_SUCH_DRIVER_ERROR
+                                     statusCode:FB_NO_SUCH_DRIVER_ERROR_CODE
+                                        message:message ?: FB_NO_SUCH_DRIVER_MSG
                                       traceback:traceback];
 }
 

@@ -47,20 +47,20 @@ id<FBResponsePayload> FBResponseWithCachedElements(NSArray<XCUIElement *> *eleme
   return FBResponseWithStatus([FBCommandStatus okWithValue:elementsResponse]);
 }
 
-//id<FBResponsePayload> FBResponseWithError(NSError *error)
-//{
-//  return FBResponseWithStatus(FBCommandStatusUnhandled, error.description);
-//}
-//
-//id<FBResponsePayload> FBResponseWithErrorFormat(NSString *format, ...)
-//{
-//  va_list argList;
-//  va_start(argList, format);
-//  NSString *errorMessage = [[NSString alloc] initWithFormat:format arguments:argList];
-//  id<FBResponsePayload> payload = FBResponseWithStatus(FBCommandStatusUnhandled, errorMessage);
-//  va_end(argList);
-//  return payload;
-//}
+id<FBResponsePayload> FBResponseWithUnknownError(NSError *error)
+{
+  return FBResponseWithStatus([FBCommandStatus unknownErrorWithMessage:error.description traceback:nil]);
+}
+
+id<FBResponsePayload> FBResponseWithUnknownErrorFormat(NSString *format, ...)
+{
+  va_list argList;
+  va_start(argList, format);
+  NSString *errorMessage = [[NSString alloc] initWithFormat:format arguments:argList];
+  id<FBResponsePayload> payload = FBResponseWithStatus([FBCommandStatus unknownErrorWithMessage:errorMessage traceback:nil]);
+  va_end(argList);
+  return payload;
+}
 
 id<FBResponsePayload> FBResponseWithStatus(FBCommandStatus *status)
 {

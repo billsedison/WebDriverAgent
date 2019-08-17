@@ -25,12 +25,8 @@
 
 static id<FBResponsePayload> FBNoSuchElementErrorResponseForRequest(FBRouteRequest *request)
 {
-  NSDictionary *errorDetails = @{
-    @"description": @"unable to find an element",
-    @"using": request.arguments[@"using"] ?: @"",
-    @"value": request.arguments[@"value"] ?: @"",
-  };
-  return FBResponseWithStatus(FBCommandStatusNoSuchElement, errorDetails);
+  return FBResponseWithStatus([FBCommandStatus noSuchElementErrorWithMessage:[NSString stringWithFormat:@"unable to find an element using '%@', value '%@'", request.arguments[@"using"], request.arguments[@"value"]]
+                                                                   traceback:[NSString stringWithFormat:@"%@", NSThread.callStackSymbols]]);
 }
 
 @implementation FBFindElementCommands
