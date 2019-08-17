@@ -378,6 +378,9 @@
 		716E0BCF1E917E810087A825 /* NSString+FBXMLSafeString.m in Sources */ = {isa = PBXBuildFile; fileRef = 716E0BCD1E917E810087A825 /* NSString+FBXMLSafeString.m */; };
 		716E0BD11E917F260087A825 /* FBXMLSafeStringTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 716E0BD01E917F260087A825 /* FBXMLSafeStringTests.m */; };
 		718F49C8230844330045FE8B /* FBProtocolHelpersTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 718F49C7230844330045FE8B /* FBProtocolHelpersTests.m */; };
+		718F49C923087ACF0045FE8B /* FBProtocolHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B155DD23080CA600646AFB /* FBProtocolHelpers.h */; };
+		718F49CA23087AD30045FE8B /* FBProtocolHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B155DE23080CA600646AFB /* FBProtocolHelpers.m */; };
+		718F49CB23087B040045FE8B /* FBCommandStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B155DB230711E900646AFB /* FBCommandStatus.m */; };
 		71930C4220662E1F00D3AFEC /* FBPasteboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 71930C4020662E1F00D3AFEC /* FBPasteboard.h */; };
 		71930C4320662E1F00D3AFEC /* FBPasteboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 71930C4120662E1F00D3AFEC /* FBPasteboard.m */; };
 		71930C472066434000D3AFEC /* FBPasteboardTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 71930C462066434000D3AFEC /* FBPasteboardTests.m */; };
@@ -2104,6 +2107,7 @@
 				641EE6B82240C5CA00173FCB /* FBAlert.h in Headers */,
 				641EE6B92240C5CA00173FCB /* XCUIElementQuery.h in Headers */,
 				641EE6BA2240C5CA00173FCB /* XCPointerEvent.h in Headers */,
+				718F49C923087ACF0045FE8B /* FBProtocolHelpers.h in Headers */,
 				641EE6BB2240C5CA00173FCB /* XCSourceCodeRecording.h in Headers */,
 				641EE6BC2240C5CA00173FCB /* FBRunLoopSpinner.h in Headers */,
 				641EE6BD2240C5CA00173FCB /* FBErrorBuilder.h in Headers */,
@@ -2737,6 +2741,7 @@
 				641EE5F02240C5CA00173FCB /* FBAlertsMonitor.m in Sources */,
 				641EE5F12240C5CA00173FCB /* FBClassChainQueryParser.m in Sources */,
 				641EE5F22240C5CA00173FCB /* NSPredicate+FBFormat.m in Sources */,
+				718F49CA23087AD30045FE8B /* FBProtocolHelpers.m in Sources */,
 				641EE5F32240C5CA00173FCB /* XCAccessibilityElement+FBComparison.m in Sources */,
 				641EE5F42240C5CA00173FCB /* XCUIDevice+FBRotation.m in Sources */,
 				641EE5F52240C5CA00173FCB /* XCUIElement+FBUID.m in Sources */,
@@ -2778,6 +2783,7 @@
 				641EE61A2240C5CA00173FCB /* FBElementCache.m in Sources */,
 				641EE61B2240C5CA00173FCB /* FBPasteboard.m in Sources */,
 				641EE61C2240C5CA00173FCB /* FBAlert.m in Sources */,
+				718F49CB23087B040045FE8B /* FBCommandStatus.m in Sources */,
 				641EE61D2240C5CA00173FCB /* FBElementCommands.m in Sources */,
 				641EE61E2240C5CA00173FCB /* FBExceptionHandler.m in Sources */,
 				641EE61F2240C5CA00173FCB /* FBXCodeCompatibility.m in Sources */,
