@@ -15,6 +15,7 @@
 #import "FBMathUtils.h"
 #import "FBConfiguration.h"
 #import "FBMacros.h"
+#import "FBProtocolHelpers.h"
 
 #import "XCUIElement+FBUtilities.h"
 #import "XCUIElement+FBWebDriverAttributes.h"
@@ -84,8 +85,7 @@ id<FBResponsePayload> FBResponseWithStatus(FBCommandStatus *status)
 
 inline NSDictionary *FBDictionaryResponseWithElement(XCUIElement *element, NSString *elementUUID, BOOL compact)
 {
-  NSMutableDictionary *dictionary = [NSMutableDictionary new];
-  dictionary[@"ELEMENT"] = elementUUID;
+  NSMutableDictionary *dictionary = FBInsertElement(@{}, elementUUID).mutableCopy;
   if (!compact) {
     NSArray *fields = [FBConfiguration.elementResponseAttributes componentsSeparatedByString:@","];
     XCElementSnapshot *snapshot = element.fb_lastSnapshotFromQuery;

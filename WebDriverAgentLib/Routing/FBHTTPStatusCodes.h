@@ -15,8 +15,8 @@
  */
 
 
-#ifndef HTTPStatusCodes_h
-#define HTTPStatusCodes_h
+#ifndef FBHTTPStatusCodes_h
+#define FBHTTPStatusCodes_h
 
 
 //----------------------------------------------------------------------
