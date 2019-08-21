@@ -28,33 +28,34 @@ NSString *const FBElementNotVisibleException = @"FBElementNotVisibleException";
 
 - (void)handleException:(NSException *)exception forResponse:(RouteResponse *)response
 {
-  id<FBResponsePayload> payload;
+  FBCommandStatus *commandStatus;
   NSString *traceback = [NSString stringWithFormat:@"%@", exception.callStackSymbols];
   if ([exception.name isEqualToString:FBSessionDoesNotExistException]) {
-    payload = FBResponseWithStatus([FBCommandStatus noSuchDriverErrorWithMessage:exception.reason
-                                                                       traceback:traceback]);
+    commandStatus = [FBCommandStatus noSuchDriverErrorWithMessage:exception.reason
+                                                        traceback:traceback];
   } else if ([exception.name isEqualToString:FBInvalidArgumentException]
              || [exception.name isEqualToString:FBElementAttributeUnknownException]) {
-    payload = FBResponseWithStatus([FBCommandStatus invalidArgumentErrorWithMessage:exception.reason
-                                                                          traceback:traceback]);
+    commandStatus = [FBCommandStatus invalidArgumentErrorWithMessage:exception.reason
+                                                           traceback:traceback];
   } else if ([exception.name isEqualToString:FBAlertObstructingElementException]) {
-    payload = FBResponseWithStatus([FBCommandStatus unexpectedAlertOpenErrorWithMessage:nil
-                                                                              traceback:traceback]);
+    commandStatus =[FBCommandStatus unexpectedAlertOpenErrorWithMessage:nil
+                                                              traceback:traceback];
   } else if ([exception.name isEqualToString:FBApplicationCrashedException]
              || [exception.name isEqualToString:FBApplicationDeadlockDetectedException]) {
-    payload = FBResponseWithStatus([FBCommandStatus invalidElementStateErrorWithMessage:exception.reason
-                                                                              traceback:traceback]);
+    commandStatus = [FBCommandStatus invalidElementStateErrorWithMessage:exception.reason
+                                                               traceback:traceback];
   } else if ([exception.name isEqualToString:FBInvalidXPathException]
              || [exception.name isEqualToString:FBClassChainQueryParseException]) {
-    payload = FBResponseWithStatus([FBCommandStatus invalidSelectorErrorWithMessage:exception.reason
-                                                                          traceback:traceback]);
+    commandStatus = [FBCommandStatus invalidSelectorErrorWithMessage:exception.reason
+                                                           traceback:traceback];
   } else if ([exception.name isEqualToString:FBElementNotVisibleException]) {
-    payload = FBResponseWithStatus([FBCommandStatus elementNotVisibleErrorWithMessage:exception.reason
-                                                                            traceback:traceback]);
+    commandStatus = [FBCommandStatus elementNotVisibleErrorWithMessage:exception.reason
+                                                             traceback:traceback];
   } else {
-    payload = FBResponseWithStatus([FBCommandStatus unknownErrorWithMessage:exception.reason
-                                                                  traceback:traceback]);
+    commandStatus = [FBCommandStatus unknownErrorWithMessage:exception.reason
+                                                   traceback:traceback];
   }
+  id<FBResponsePayload> payload = FBResponseWithStatus(commandStatus);
   [payload dispatchWithResponse:response];
 }
 
