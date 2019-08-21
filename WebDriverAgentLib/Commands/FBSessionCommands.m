@@ -197,7 +197,13 @@ static NSString* const USE_FIRST_MATCH = @"useFirstMatch";
           @"simulatorVersion" : [[UIDevice currentDevice] systemVersion],
           @"ip" : [XCUIDevice sharedDevice].fb_wifiIPAddress ?: [NSNull null]
         },
-      @"build" : buildInfo.copy
+      @"build" : buildInfo.copy,
+      @"screen" :
+        @{
+          @"width": @(UIScreen.mainScreen.bounds.size.width),
+          @"height": @(UIScreen.mainScreen.bounds.size.height),
+          @"scale": @(UIScreen.mainScreen.scale)
+        }
     }
   );
 }

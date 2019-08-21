@@ -72,7 +72,7 @@
     [[FBRoute POST:@"/wda/element/:uuid/focuse"] respondWithTarget:self action:@selector(handleFocuse:)],
 #else
     [[FBRoute POST:@"/wda/element/:uuid/swipe"] respondWithTarget:self action:@selector(handleSwipe:)],
-    [[FBRoute POST:@"/wda/element/:uuid/pinch"] respondWithTarget:self action:@selector(handlePinch:)],
+    [[FBRoute POST:@"/wda/pinch"] respondWithTarget:self action:@selector(handlePinch:)],
     [[FBRoute POST:@"/wda/element/:uuid/doubleTap"] respondWithTarget:self action:@selector(handleDoubleTap:)],
     [[FBRoute POST:@"/wda/element/:uuid/twoFingerTap"] respondWithTarget:self action:@selector(handleTwoFingerTap:)],
     [[FBRoute POST:@"/wda/element/:uuid/touchAndHold"] respondWithTarget:self action:@selector(handleTouchAndHold:)],
@@ -411,10 +411,13 @@
 
 + (id<FBResponsePayload>)handlePinch:(FBRouteRequest *)request
 {
-  FBElementCache *elementCache = request.session.elementCache;
-  XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
+  XCUIElement *element = request.session.activeApplication.windows.fb_firstMatch;
+  if(!element){
+    return FBResponseWithErrorFormat(@"faild get first element");
+  }
   CGFloat scale = (CGFloat)[request.arguments[@"scale"] doubleValue];
   CGFloat velocity = (CGFloat)[request.arguments[@"velocity"] doubleValue];
+  NSLog(@"handlePinch scale=%f,velocity=%f", scale, velocity);
   [element pinchWithScale:scale velocity:velocity];
   return FBResponseWithOK();
 }

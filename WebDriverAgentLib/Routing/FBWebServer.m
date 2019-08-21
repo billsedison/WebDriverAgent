@@ -26,8 +26,8 @@
 
 #import "XCUIDevice+FBHelpers.h"
 
-static NSString *const FBServerURLBeginMarker = @"ServerURLHere->";
-static NSString *const FBServerURLEndMarker = @"<-ServerURLHere";
+static NSString *const FBServerURLBeginMarker = @"Inspector URL Here->";
+static NSString *const FBServerURLEndMarker = @"/Inspector";
 
 @interface FBHTTPConnection : RoutingConnection
 @end
@@ -85,6 +85,13 @@ static NSString *const FBServerURLEndMarker = @"<-ServerURLHere";
   self.server = [[RoutingHTTPServer alloc] init];
   [self.server setRouteQueue:dispatch_get_main_queue()];
   [self.server setDefaultHeader:@"Server" value:@"WebDriverAgent/1.0"];
+  [self.server setType:@"_http._tcp."];
+  [self.server setName:[NSString stringWithFormat:@"%@-%@",@"WebDriverAgent",[[UIDevice currentDevice] name]]];
+
+  // Cross-origin resource sharing problem
+  [self.server setDefaultHeader:@"Access-Control-Allow-Origin" value:@"*"];
+  [self.server setDefaultHeader:@"Access-Control-Allow-Methods" value:@"*"];
+  [self.server setDefaultHeader:@"Access-Control-Allow-Headers" value:@"*"];
   [self.server setConnectionClass:[FBHTTPConnection self]];
 
   [self registerRouteHandlers:[self.class collectCommandHandlerClasses]];
@@ -207,6 +214,115 @@ static NSString *const FBServerURLEndMarker = @"<-ServerURLHere";
   }
 }
 
+- (NSData *)getDevice {
+
+
+
+  NSDictionary* device = [[NSMutableDictionary alloc] init];
+  NSDictionary* emptyObj = [[NSDictionary alloc] init];
+  NSDictionary* provider = [[NSMutableDictionary alloc] init];
+  NSString* uid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+
+  [provider setValue:[[UIDevice currentDevice] name] forKey:@"name"];
+  [provider setValue:uid forKey:@"channel"];
+
+  NSNumber *yes = [NSNumber numberWithBool:YES];
+  NSNumber *no = [NSNumber numberWithBool:NO];
+
+  NSDate* now = [[NSDate alloc] init];
+  NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+  [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+
+  [device setValue:@"abi" forKey:@"arm64"];
+  [device setValue:no forKey:@"airplaneMode"];
+  [device setValue:emptyObj forKey:@"battery"];
+  [device setValue:emptyObj forKey:@"browser"];
+  [device setValue:uid forKey:@"channel"];
+  [device setValue:@"" forKey:@"cpuPlatform"];
+  [device setValue:[formatter stringFromDate:now]  forKey:@"createdAt"];
+  [device setValue:@"Apple" forKey:@"manufacturer"];
+  [device setValue: [[UIDevice currentDevice] model] forKey:@"model"];
+  [device setValue:emptyObj forKey:@"network"];
+  [device setValue:@"2.0" forKey:@"openGLESVersion"];
+  [device setValue:@"" forKey:@"operator"];
+  [device setValue:@"" forKey:@"owner"];
+  [device setValue:uid forKey:@"serial"];
+  [device setValue:emptyObj forKey:@"phone"];
+  [device setValue:@"iOS" forKey:@"platform"];
+  [device setValue:@3 forKey:@"status"];
+  [device setValue:yes forKey:@"using"];
+  [device setValue:[formatter stringFromDate:now] forKey:@"presenceChangedAt"];
+  [device setValue:yes forKey:@"present"];
+  [device setValue:emptyObj forKey:@"display"];
+  [device setValue:[[UIDevice currentDevice] localizedModel] forKey:@"product"];
+  [device setValue:provider forKey:@"provider"];
+  [device setValue:yes forKey:@"ready"];
+  [device setValue:yes forKey:@"remoteConnect"];
+  [device setValue:emptyObj forKey:@"sdk"];
+  [device setValue:emptyObj forKey:@"display"];
+  [device setValue:[[UIDevice currentDevice] systemVersion] forKey:@"version"];
+
+
+  NSError *error = nil;
+  NSData * data = [NSJSONSerialization dataWithJSONObject:device
+                                                  options:NSJSONWritingPrettyPrinted
+                                                    error:&error];
+  if (error) {
+    return nil;
+  }
+  return data;
+}
+
+
+
+- (NSData *)keyPress:(NSString *)key{
+  [FBLogger logFmt:@"keyPress key = %@",key];
+  NSDictionary* emptyObj = [[NSDictionary alloc] init];
+
+  if ([key isEqualToString:@"mute"]){
+    for(int i = 0 ; i < 20; i ++){
+      [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonVolumeDown];
+    }
+  }else if ([key isEqualToString:@"volume_down"]){
+    [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonVolumeDown];
+  }else if ([key isEqualToString:@"volume_up"]){
+    [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonVolumeUp];
+  }
+  NSError *error = nil;
+  NSData * data = [NSJSONSerialization dataWithJSONObject:emptyObj
+                                                  options:NSJSONWritingPrettyPrinted
+                                                    error:&error];
+  if (error) {
+    return nil;
+  }
+  return data;
+}
+
+
+-(UIImage*)imageWithImage: (UIImage*) sourceImage scaledToWidth: (CGFloat) i_width
+{
+  CGFloat oldWidth = sourceImage.size.width;
+  CGFloat scaleFactor = i_width / oldWidth;
+
+  CGFloat newHeight = sourceImage.size.height * scaleFactor;
+  CGFloat newWidth = oldWidth * scaleFactor;
+
+  UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight));
+  [sourceImage drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
+  UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  return newImage;
+}
+
+- (NSData *)screenshot {
+  XCUIScreen *mainScreen = [XCUIScreen mainScreen];
+  UIImage *image =  [[mainScreen screenshot] image];
+  image = [self imageWithImage:image scaledToWidth:480];
+  NSData* screenshotData = (NSData *)UIImageJPEGRepresentation(image, 1);
+  return  [screenshotData base64EncodedDataWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+}
+
+
 - (void)handleException:(NSException *)exception forResponse:(RouteResponse *)response
 {
   if ([self.exceptionHandler handleException:exception forResponse:response]) {
@@ -225,6 +341,18 @@ static NSString *const FBServerURLEndMarker = @"<-ServerURLHere";
   [self.server get:@"/wda/shutdown" withBlock:^(RouteRequest *request, RouteResponse *response) {
     [response respondWithString:@"Shutting down"];
     [self.delegate webServerDidRequestShutdown:self];
+  }];
+
+  [self.server get:@"/device" withBlock:^(RouteRequest *request, RouteResponse *response) {
+    [response respondWithData: [self getDevice]];
+  }];
+
+  [self.server post:@"/keyPress" withBlock:^(RouteRequest *request, RouteResponse *response) {
+    [response respondWithData: [self keyPress:[request param:@"key"]]];
+  }];
+
+  [self.server get:@"/deviceSS" withBlock:^(RouteRequest *request, RouteResponse *response) {
+    [response respondWithData: [self screenshot]];
   }];
 
   [self registerRouteHandlers:@[FBUnknownCommands.class]];

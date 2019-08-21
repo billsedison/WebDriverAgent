@@ -27,7 +27,8 @@
     [[FBRoute GET:@"/*"].withoutSession respondWithTarget:self action:@selector(unhandledHandler:)],
     [[FBRoute POST:@"/*"].withoutSession respondWithTarget:self action:@selector(unhandledHandler:)],
     [[FBRoute PUT:@"/*"].withoutSession respondWithTarget:self action:@selector(unhandledHandler:)],
-    [[FBRoute DELETE:@"/*"].withoutSession respondWithTarget:self action:@selector(unhandledHandler:)]
+    [[FBRoute DELETE:@"/*"].withoutSession respondWithTarget:self action:@selector(unhandledHandler:)],
+    [[FBRoute OPTIONS:@"/*"].withoutSession respondWithTarget:self action:@selector(options:)]
   ];
 }
 
@@ -39,5 +40,11 @@
     [NSString stringWithFormat:@"Unhandled endpoint: %@ with parameters %@", request.URL, request.parameters]
   );
 }
+
++ (id<FBResponsePayload>)options:(FBRouteRequest *)request
+{
+  return FBResponseWithOK();
+}
+
 
 @end

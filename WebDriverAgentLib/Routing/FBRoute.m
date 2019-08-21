@@ -94,6 +94,11 @@ static NSString *const FBRouteSessionPrefix = @"/session/:sessionID";
   return [self withVerb:@"DELETE" path:pathPattern requiresSession:YES];
 }
 
++ (instancetype)OPTIONS:(NSString *)pathPattern
+{
+  return [self withVerb:@"OPTIONS" path:pathPattern requiresSession:YES];
+}
+
 + (NSString *)pathPatternWithSession:(NSString *)pathPattern requiresSession:(BOOL)requiresSession
 {
   NSRange range = [pathPattern rangeOfString:FBRouteSessionPrefix];

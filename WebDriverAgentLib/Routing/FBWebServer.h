@@ -34,6 +34,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)stopServing;
 
+/**
+ get json device
+ */
+- (NSData*) getDevice;
+
 @end
 
 /**
