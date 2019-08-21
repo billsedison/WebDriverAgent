@@ -19,7 +19,7 @@
 - (void)testValidPrefixedCapsParsing
 {
   NSError *error = nil;
-  NSDictionary<NSString *, id> *parsedCaps = parseCapabilities(@{
+  NSDictionary<NSString *, id> *parsedCaps = FBParseCapabilities(@{
     @"firstMatch": @[@{
       @"appium:bundleId": @"com.example.id"
     }]
@@ -31,7 +31,7 @@
 - (void)testValidPrefixedCapsMerging
 {
   NSError *error = nil;
-  NSDictionary<NSString *, id> *parsedCaps = parseCapabilities(@{
+  NSDictionary<NSString *, id> *parsedCaps = FBParseCapabilities(@{
      @"firstMatch": @[@{
        @"bundleId": @"com.example.id"
      }],
@@ -47,7 +47,7 @@
 - (void)testEmptyCaps
 {
   NSError *error = nil;
-  NSDictionary<NSString *, id> *parsedCaps = parseCapabilities(@{}, &error);
+  NSDictionary<NSString *, id> *parsedCaps = FBParseCapabilities(@{}, &error);
   XCTAssertNil(error);
   XCTAssertEqual(parsedCaps.count, 0);
 }
@@ -55,7 +55,7 @@
 - (void)testCapsMergingFailure
 {
   NSError *error = nil;
-  NSDictionary<NSString *, id> *parsedCaps = parseCapabilities(@{
+  NSDictionary<NSString *, id> *parsedCaps = FBParseCapabilities(@{
     @"firstMatch": @[@{
       @"appium:bundleId": @"com.example.id"
     }],
@@ -70,7 +70,7 @@
 - (void)testPrefixingStandardCapability
 {
   NSError *error = nil;
-  NSDictionary<NSString *, id> *parsedCaps = parseCapabilities(@{
+  NSDictionary<NSString *, id> *parsedCaps = FBParseCapabilities(@{
     @"firstMatch": @[@{
       @"appium:platformName": @"com.example.id"
     }]

@@ -35,6 +35,6 @@ id _Nullable FBExtractElement(NSDictionary *src);
  @param error Is set if there was an error while parsing the source capabilities
  @returns Parsed capabilitites mapping or nil in case of failure
  */
-NSDictionary<NSString *, id> *_Nullable parseCapabilities(NSDictionary<NSString *, id> *caps, NSError **error);
+NSDictionary<NSString *, id> *_Nullable FBParseCapabilities(NSDictionary<NSString *, id> *caps, NSError **error);
 
 NS_ASSUME_NONNULL_END

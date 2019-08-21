@@ -80,7 +80,7 @@ static NSString* const USE_FIRST_MATCH = @"useFirstMatch";
 {
   NSDictionary<NSString *, id> *requirements;
   NSError *error;
-  if (nil == (requirements = parseCapabilities(request.arguments, &error))) {
+  if (nil == (requirements = FBParseCapabilities(request.arguments, &error))) {
     return FBResponseWithStatus([FBCommandStatus sessionNotCreatedError:error.description traceback:nil]);
   }
   [FBConfiguration setShouldUseTestManagerForVisibilityDetection:[requirements[@"shouldUseTestManagerForVisibilityDetection"] boolValue]];

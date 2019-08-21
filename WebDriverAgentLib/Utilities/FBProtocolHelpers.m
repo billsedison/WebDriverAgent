@@ -105,7 +105,7 @@ NSDictionary<NSString *, id> *_Nullable stripPrefixes(NSDictionary<NSString *, i
   return filteredCaps.copy;
 }
 
-NSDictionary<NSString *, id> *parseCapabilities(NSDictionary<NSString *, id> *caps, NSError **error)
+NSDictionary<NSString *, id> *FBParseCapabilities(NSDictionary<NSString *, id> *caps, NSError **error)
 {
   NSDictionary<NSString *, id> *alwaysMatch = caps[ALWAYS_MATCH_KEY] ?: @{};
   NSArray<NSDictionary<NSString *, id> *> *firstMatch = caps[FIRST_MATCH_KEY] ?: @[];
